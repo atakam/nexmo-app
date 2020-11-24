@@ -1,0 +1,4 @@
+[
+    {"msisdn":"15149670418","to":"33644632576","messageId":"1700000294930D4D","text":"A message from Canada 🇨🇦","type":"unicode","keyword":"A","api-key":"66d8e5af","message-timestamp":"2020-11-24 14:29:44"},
+    {"msisdn":"15149670418","to":"33644632576","messageId":"16000002D51FB52D","text":"This really works","type":"text","keyword":"THIS","api-key":"66d8e5af","message-timestamp":"2020-11-24 14:31:53"}
+]
