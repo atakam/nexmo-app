@@ -22,11 +22,17 @@ router.post('/new', (req, res, next) => {
 
 router.get('/', (req, res, next) => {
     console.log('Get all messages');
+    let respObject = {};
     SmsTable.getAllSms()
     .then((messages) => {
+        respObject.remote = messages;
+        return SmsTable.getAllSelfSms();
+    })
+    .then((messages) => {
+        respObject.self = messages
         res.json({
             status: true,
-            messages
+            messages: respObject
         })
     })
     .catch(error => next(error));
@@ -49,10 +55,22 @@ function sendSMS({sms, res, next}) {
         } else {
             if(responseData.messages[0]['status'] === "0") {
                 console.log("Message sent successfully.");
-                res.json({status: true});
+                const smsObj = {
+                    msisdn: to,
+                    selfnumber: from,
+                    messageId: responseData.messages[0]['message-id'],
+                    smstext: text,
+                    smstype: 'text',
+                    messagetimestamp: ''
+                };
+                SmsTable.addSelfSms(smsObj)
+                .then(() => {
+                    res.json({state: true, responseData});
+                })
+                .catch((error) => next(error))
             } else {
                 console.log(`Message failed with error: ${responseData.messages[0]['error-text']}`);
-                res.json({status: false, error: responseData.messages});
+                res.json({state: false, error: responseData.messages});
             }
         }
     })

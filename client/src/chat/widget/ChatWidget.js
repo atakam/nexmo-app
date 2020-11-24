@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import { Widget, addResponseMessage, deleteMessages, addUserMessage } from 'react-chat-widget';
+import { Widget, addResponseMessage, addUserMessage } from 'react-chat-widget';
 
 import 'react-chat-widget/lib/styles.css';
 
@@ -8,7 +8,12 @@ class ChatWidget extends Component {
 
   constructor(props) {
     super(props);
-    this.messages = props.messages.map(element => {
+    this.messages = props.messages && props.messages.map(element => {
+      element.displayed = false;
+      return element;
+    });
+
+    this.selfmessages = props.selfmessages && props.selfmessages.map(element => {
       element.displayed = false;
       return element;
     });
@@ -23,24 +28,39 @@ class ChatWidget extends Component {
   }
 
   updateMessages = () => {
-    const existingmessageids = this.messages.map((m) => {
-      return m.messageid;
-    });
-    console.log({existingmessageids});
-    this.props.messages.forEach((m) => {
-      if (!existingmessageids.includes(m.messageid)) {
-        this.messages.push(m);
-      }
-    });
-    console.log({props:this.props.messages});
-    console.log({messages:this.messages});
+    if (this.messages) {
+      const existingmessageids = this.messages.map((m) => {
+        return m.messageid;
+      });
+      this.props.messages.forEach((m) => {
+        if (!existingmessageids.includes(m.messageid)) {
+          this.messages.push(m);
+        }
+      });
+      this.messages.forEach(element => {
+        if (!element.displayed) {
+          element.displayed = true;
+          addResponseMessage(element.smstext);
+        }
+      });
+    }
 
-    this.messages.forEach(element => {
-      if (!element.displayed) {
-        element.displayed = true;
-        addResponseMessage(element.smstext);
-      }
-    });
+    if (this.selfmessages) {
+      const existingselfmessageids = this.selfmessages.map((m) => {
+        return m.messageid;
+      });
+      this.props.selfmessages.forEach((m) => {
+        if (!existingselfmessageids.includes(m.messageid)) {
+          this.selfmessages.push(m);
+        }
+      });
+      this.selfmessages.forEach(element => {
+        if (!element.displayed) {
+          element.displayed = true;
+          addUserMessage(element.smstext);
+        }
+      });
+    }
   }
 
   handleNewUserMessage = (newMessage) => {

@@ -9,7 +9,8 @@ class Chat extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      messages: {}
+      messages: {},
+      selfmessages: {}
     };
   }
 
@@ -27,14 +28,18 @@ class Chat extends Component {
     fetch('/sms')
     .then(response => response.json())
     .then(json => {
-      var grouped = _.groupBy(json.messages.messages, function(message) {
+      var grouped = _.groupBy(json.messages.remote.messages, function(message) {
+        return message.msisdn;
+      });
+      var selfgrouped = _.groupBy(json.messages.self.messages, function(message) {
         return message.msisdn;
       });
       console.log(json);
-      if (!this.deepEqual(this.state.messages, grouped)) {
+      if (!this.deepEqual(this.state.messages, grouped) || !this.deepEqual(this.state.selfmessages, selfgrouped)) {
         console.log(grouped);
         this.setState({
-          messages: grouped
+          messages: grouped,
+          selfmessages: selfgrouped
         })
       }
     })
@@ -67,12 +72,13 @@ class Chat extends Component {
 
   getWidgets = () => {
     let widgets = [];
-    const {messages} = this.state;
+    const {messages, selfmessages} = this.state;
     for (const msisdn in messages) {
       widgets.push(<ChatWidget
         key={msisdn}
         msisdn={msisdn}
         messages={messages[msisdn]}
+        selfmessages={selfmessages[msisdn]}
         fetchSMS={this.fetchSMS}
       />);
     }
