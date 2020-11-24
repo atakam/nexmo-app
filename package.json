@@ -1,0 +1,38 @@
+{
+  "name": "sihone-management-server-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ./server",
+    "server": "nodemon ./server",
+    "client": "cd client && npm install && npm start",
+    "configure-dev": "npm run configure && npm run dev",
+    "configure": "./bin/configure_db.sh",
+    "heroku-postbuild": "cd client && npm install && npm run build"
+  },
+  "engines": {
+    "node": "10.x"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "express-formidable": "^1.2.0",
+    "nodemon": "^1.18.4"
+  },
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "cookie-parser": "^1.4.3",
+    "cors": "^2.8.5",
+    "crypto-js": "^3.1.9-1",
+    "express": "^4.16.3",
+    "mv": "^2.1.1",
+    "nexmo": "^2.6.0",
+    "nodemailer": "^4.6.8",
+    "path": "^0.12.7",
+    "pg": "^7.4.3",
+    "request": "^2.88.0",
+    "uuid": "^3.3.2"
+  }
+}
